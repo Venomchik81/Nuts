@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ВЭД Дашборд — Грецкие орехи КНР | НПО «Дюрер Инжиниринг»</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Geologica:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d14;
+    --bg2: #0f1420;
+    --bg3: #161c2e;
+    --card: #111827;
+    --card2: #1a2235;
+    --border: rgba(99,120,180,0.18);
+    --border2: rgba(99,120,180,0.08);
+    --accent: #3b82f6;
+    --accent2: #60a5fa;
+    --accent3: #93c5fd;
+    --gold: #f59e0b;
+    --gold2: #fbbf24;
+    --green: #10b981;
+    --green2: #34d399;
+    --orange: #f97316;
+    --red: #ef4444;
+    --red2: #f87171;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --heading: #f8fafc;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Bebas Neue', sans-serif;
+    --body: 'Geologica', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SIDEBAR NAV */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid var(--border2);
+  }
+  .sidebar-logo .company {
+    font-family: var(--display);
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--accent2);
+    line-height: 1;
+  }
+  .sidebar-logo .sub {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .nav-section {
+    padding: 16px 12px 8px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 500;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    margin: 2px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text2);
+    transition: all 0.18s;
+    border: 1px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item:hover { background: var(--card); color: var(--text); border-color: var(--border2); }
+  .nav-item.active { background: rgba(59,130,246,0.12); color: var(--accent2); border-color: rgba(59,130,246,0.25); }
+  .nav-item .icon { font-size: 15px; width: 20px; text-align: center; }
+  .nav-item .badge {
+    margin-left: auto;
+    background: rgba(59,130,246,0.2);
+    color: var(--accent2);
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 10px;
+    font-family: var(--mono);
+  }
+  .nav-item.badge-red .badge { background: rgba(239,68,68,0.2); color: var(--red2); }
+  .nav-item.badge-gold .badge { background: rgba(245,158,11,0.2); color: var(--gold2); }
+  .nav-item.badge-green .badge { background: rgba(16,185,129,0.2); color: var(--green2); }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid var(--border2);
+    font-size: 11px;
+    color: var(--text3);
+    line-height: 1.5;
+  }
+
+  /* MAIN */
+  .main {
+    margin-left: 240px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: sticky;
+    top: 0;
+    background: rgba(10,13,20,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 50;
+  }
+  .topbar-title {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--heading);
+    flex: 1;
+  }
+  .topbar-badge {
+    font-size: 11px;
+    background: rgba(16,185,129,0.15);
+    color: var(--green2);
+    border: 1px solid rgba(16,185,129,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: var(--mono);
+  }
+  .topbar-date {
+    font-size: 12px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+
+  /* CONTENT */
+  .content { padding: 28px 32px; }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 24px;
+  }
+  .section-header h2 {
+    font-family: var(--display);
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--heading);
+    line-height: 1;
+  }
+  .section-header p {
+    font-size: 13px;
+    color: var(--text3);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .stat-card:hover { border-color: rgba(99,120,180,0.4); transform: translateY(-2px); }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+  }
+  .stat-card .label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+  .stat-card .value { font-family: var(--display); font-size: 36px; letter-spacing: 1px; color: var(--heading); margin: 6px 0 2px; line-height: 1; }
+  .stat-card .desc { font-size: 12px; color: var(--text2); }
+  .stat-card .icon-bg {
+    position: absolute;
+    right: 16px; top: 16px;
+    font-size: 28px;
+    opacity: 0.12;
+  }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .col-span-2 { grid-column: span 2; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .card-subtitle { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  /* HS CODE TABLE */
+  .hs-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .hs-table thead tr { border-bottom: 2px solid var(--border); }
+  .hs-table th {
+    text-align: left; padding: 8px 12px;
+    font-size: 10px; font-weight: 600;
+    color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px;
+    white-space: nowrap;
+  }
+  .hs-table td { padding: 10px 12px; border-bottom: 1px solid var(--border2); vertical-align: top; }
+  .hs-table tr:last-child td { border-bottom: none; }
+  .hs-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .hs-table .code-cell {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent2);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .duty-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .duty-5 { background: rgba(16,185,129,0.15); color: var(--green2); }
+  .duty-12 { background: rgba(239,68,68,0.15); color: var(--red2); }
+  .duty-var { background: rgba(245,158,11,0.15); color: var(--gold2); }
+  .vat-10 { background: rgba(59,130,246,0.12); color: var(--accent2); }
+  .vat-20 { background: rgba(99,120,180,0.12); color: var(--text2); }
+
+  /* RISK CARDS */
+  .risks-grid { display: flex; flex-direction: column; gap: 10px; }
+  .risk-item {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    gap: 16px;
+    align-items: start;
+    background: var(--card2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .risk-item:hover { border-color: var(--border); transform: translateX(3px); }
+  .risk-item.risk-high { border-left: 3px solid var(--red); }
+  .risk-item.risk-medium { border-left: 3px solid var(--orange); }
+  .risk-item.risk-low { border-left: 3px solid var(--green); }
+
+  .risk-level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  .risk-high .risk-level-badge { background: rgba(239,68,68,0.15); color: var(--red2); }
+  .risk-medium .risk-level-badge { background: rgba(249,115,22,0.15); color: var(--orange); }
+  .risk-low .risk-level-badge { background: rgba(16,185,129,0.15); color: var(--green2); }
+
+  .risk-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .risk-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .risk-prob {
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .prob-high { background: rgba(239,68,68,0.1); color: var(--red2); }
+  .prob-medium { background: rgba(249,115,22,0.1); color: var(--orange); }
+  .prob-low { background: rgba(16,185,129,0.1); color: var(--green2); }
+
+  /* RISK FILTER TABS */
+  .filter-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .filter-tab {
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    transition: all 0.18s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-tab:hover { background: var(--card2); color: var(--text); }
+  .filter-tab.active { background: rgba(59,130,246,0.12); color: var(--accent2); border-color: rgba(59,130,246,0.3); }
+  .filter-tab .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-all { background: var(--accent); }
+  .dot-high { background: var(--red); }
+  .dot-medium { background: var(--orange); }
+  .dot-low { background: var(--green); }
+
+  /* DONUT CHART */
+  .donut-wrap { display: flex; align-items: center; gap: 28px; }
+  .donut-svg { flex-shrink: 0; }
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .legend-label { color: var(--text2); }
+  .legend-val { font-family: var(--mono); color: var(--text); font-size: 14px; font-weight: 500; margin-left: auto; }
+
+  /* PAYMENTS BAR CHART */
+  .bar-chart { display: flex; flex-direction: column; gap: 14px; }
+  .bar-row { }
+  .bar-label { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .bar-name { font-size: 12px; color: var(--text2); }
+  .bar-val { font-size: 12px; font-family: var(--mono); color: var(--text); }
+  .bar-track { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+
+  /* PROCESS TIMELINE */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 11px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), rgba(59,130,246,0.1));
+    border-radius: 2px;
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 18px;
+    animation: slideIn 0.4s ease both;
+  }
+  .timeline-item::before {
+    content: attr(data-step);
+    position: absolute;
+    left: -32px;
+    top: 2px;
+    width: 22px; height: 22px;
+    background: var(--bg3);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--accent2);
+    text-align: center;
+    line-height: 18px;
+  }
+  .timeline-item.done::before { background: rgba(16,185,129,0.2); border-color: var(--green); color: var(--green2); }
+  @keyframes slideIn { from { opacity:0; transform: translateX(-8px); } to { opacity:1; transform: translateX(0); } }
+  .timeline-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .timeline-meta { display: flex; gap: 12px; margin-top: 4px; }
+  .timeline-who { font-size: 11px; color: var(--text3); }
+  .timeline-when { font-size: 11px; font-family: var(--mono); color: var(--accent3); }
+
+  /* LOGISTICS TABLE */
+  .logistics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .logistics-card {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .logistics-card:hover { border-color: var(--border); }
+  .logistics-card .route-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .route-icon { font-size: 20px; }
+  .logistics-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .logistics-key { font-size: 11px; color: var(--text3); }
+  .logistics-val { font-size: 11px; font-family: var(--mono); color: var(--text2); }
+  .rec-badge {
+    margin-top: 10px;
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .rec-best { background: rgba(16,185,129,0.15); color: var(--green2); }
+  .rec-ok { background: rgba(245,158,11,0.15); color: var(--gold2); }
+  .rec-no { background: rgba(239,68,68,0.12); color: var(--red2); }
+
+  /* DOCS CHECKLIST */
+  .docs-list { display: flex; flex-direction: column; gap: 8px; }
+  .doc-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .doc-item:hover { border-color: var(--border); }
+  .doc-item.checked { border-color: rgba(16,185,129,0.25); }
+  .doc-check {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.18s;
+    font-size: 11px;
+    color: transparent;
+  }
+  .doc-item.checked .doc-check { background: var(--green); border-color: var(--green); color: white; }
+  .doc-name { font-size: 13px; color: var(--text); flex: 1; }
+  .doc-issuer { font-size: 11px; color: var(--text3); }
+  .doc-required {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .doc-req { background: rgba(239,68,68,0.12); color: var(--red2); }
+  .doc-rec { background: rgba(245,158,11,0.12); color: var(--gold2); }
+
+  /* PROGRESS RING WIDGET */
+  .checklist-summary {
+    display: flex; align-items: center; gap: 20px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .progress-ring-wrap { position: relative; width: 60px; height: 60px; flex-shrink: 0; }
+  .progress-ring-wrap svg { transform: rotate(-90deg); }
+  .progress-ring-val {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--green2);
+  }
+  .checklist-text { font-size: 13px; color: var(--text2); }
+  .checklist-text strong { color: var(--text); }
+
+  /* OVERVIEW HERO */
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .hero-card {
+    background: linear-gradient(135deg, var(--card), var(--card2));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: var(--glow, rgba(59,130,246,0.06));
+    filter: blur(20px);
+  }
+  .hero-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--text3); font-weight: 500; }
+  .hero-value { font-family: var(--display); font-size: 48px; letter-spacing: 2px; color: var(--heading); line-height: 1; margin: 8px 0 6px; }
+  .hero-sub { font-size: 12px; color: var(--text2); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* TOOLTIP */
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%; transform: translateX(-50%);
+    background: var(--card2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 999;
+    font-family: var(--body);
+  }
+
+  /* ANIMATE IN */
+  .card { animation: cardIn 0.35s ease both; }
+  @keyframes cardIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+  .pulse { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.5; } }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="company">ДЮРЕР ИНЖИНИРИНГ</div>
+    <div class="sub">ВЭД &bull; Таможня &bull; Аналитика</div>
+  </div>
+
+  <div class="nav-section">Навигация</div>
+  <a class="nav-item active" onclick="showSection('overview', this)">
+    <span class="icon">◈</span> Обзор
+    <span class="badge">2025</span>
+  </a>
+  <a class="nav-item" onclick="showSection('classification', this)">
+    <span class="icon">⊞</span> Классификация ТН ВЭД
+    <span class="badge">7</span>
+  </a>
+  <a class="nav-item" onclick="showSection('payments', this)">
+    <span class="icon">◎</span> Таможенные платежи
+  </a>
+  <a class="nav-item badge-red" onclick="showSection('risks', this)">
+    <span class="icon">⚠</span> Риски
+    <span class="badge">16</span>
+  </a>
+  <a class="nav-item" onclick="showSection('docs', this)">
+    <span class="icon">☑</span> Документы
+    <span class="badge">11</span>
+  </a>
+  <a class="nav-item" onclick="showSection('logistics', this)">
+    <span class="icon">⬡</span> Логистика
+  </a>
+  <a class="nav-item" onclick="showSection('process', this)">
+    <span class="icon">⟳</span> Процесс
+    <span class="badge">13</span>
+  </a>
+
+  <div class="sidebar-footer">
+    <div>Аналитическая записка</div>
+    <div>Грецкие орехи из КНР</div>
+    <div style="margin-top:6px;color:var(--accent3);font-family:var(--mono);font-size:10px;">v1.0 &bull; 2025</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">ВЭД ДАШБОРД — ГРЕЦКИЕ ОРЕХИ КНР</div>
+    <span class="topbar-badge">● АКТУАЛЬНО</span>
+    <div class="topbar-date" id="currentDate"></div>
+  </div>
+
+  <div class="content">
+
+    <!-- ============== OVERVIEW ============== -->
+    <div class="section active" id="section-overview">
+      <div class="section-header">
+        <h2>ОБЗОР ПРОЕКТА</h2>
+        <p>Импорт грецких орехов из Китайской Народной Республики — сводные показатели</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card" style="--card-accent:var(--accent)">
+          <div class="label">Кодов ТН ВЭД</div>
+          <div class="value">7</div>
+          <div class="desc">Категорий орехов</div>
+          <div class="icon-bg">⊞</div>
+        </div>
+        <div class="stat-card" style="--card-accent:var(--red)">
+          <div class="label">Рисков выявлено</div>
+          <div class="value">16</div>
+          <div class="desc">5 высоких / 6 средних / 5 низких</div>
+          <div class="icon-bg">⚠</div>
+        </div>
+        <div class="stat-card" style="--card-accent:var(--green)">
+          <div class="label">Мин. нагрузка</div>
+          <div class="value">16%</div>
+          <div class="desc">Очищенный орех (ядро)</div>
+          <div class="icon-bg">◎</div>
+        </div>
+        <div class="stat-card" style="--card-accent:var(--gold)">
+          <div class="label">Документов</div>
+          <div class="value">11</div>
+          <div class="desc">Для оформления поставки</div>
+          <div class="icon-bg">☑</div>
+        </div>
+      </div>
+
+      <div class="hero-grid">
+        <div class="hero-card" style="--glow:rgba(239,68,68,0.08)">
+          <div class="hero-label">Оптимальная пошлина</div>
+          <div class="hero-value" style="color:var(--green2)">5%</div>
+          <div class="hero-sub">Код 0802 31 / 0802 32 &mdash; орехи в скорлупе и очищенные</div>
+        </div>
+        <div class="hero-card" style="--glow:rgba(245,158,11,0.08)">
+          <div class="hero-label">Критический срок поставки (ж/д)</div>
+          <div class="hero-value" style="color:var(--gold2)">23<span style="font-size:24px">д</span></div>
+          <div class="hero-sub">Средний срок по маршруту Китай → РФ (ж/д через Казахстан)</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Матрица рисков</div>
+              <div class="card-subtitle">Распределение по уровням</div>
+            </div>
+          </div>
+          <div class="donut-wrap">
+            <svg class="donut-svg" width="120" height="120" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="48" fill="none" stroke="#1a2235" stroke-width="18"/>
+              <!-- high: 5/16 = 31.25% of 301.6 = 94.25 -->
+              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--red)" stroke-width="18"
+                stroke-dasharray="94 207.6" stroke-dashoffset="0" stroke-linecap="butt"/>
+              <!-- medium: 6/16 = 37.5% = 113.1, offset = -94 -->
+              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--orange)" stroke-width="18"
+                stroke-dasharray="113 188.5" stroke-dashoffset="-94" stroke-linecap="butt"/>
+              <!-- low: 5/16 = 31.25% = 94.25, offset = -207 -->
+              <circle cx="60" cy="60" r="48" fill="none" stroke="var(--green)" stroke-width="18"
+                stroke-dasharray="94 207.6" stroke-dashoffset="-207" stroke-linecap="butt"/>
+              <text x="60" y="56" text-anchor="middle" font-family="Bebas Neue" font-size="22" fill="#f8fafc" transform="rotate(90 60 60)">16</text>
+              <text x="60" y="70" text-anchor="middle" font-family="Geologica" font-size="9" fill="#64748b" transform="rotate(90 60 60)">рисков</text>
+            </svg>
+            <div class="donut-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--red)"></div>
+                <span class="legend-label">Высокий риск</span>
+                <span class="legend-val">5</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--orange)"></div>
+                <span class="legend-label">Средний риск</span>
+                <span class="legend-val">6</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--green)"></div>
+                <span class="legend-label">Низкий риск</span>
+                <span class="legend-val">5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Сравнение нагрузки</div>
+              <div class="card-subtitle">% от таможенной стоимости</div>
+            </div>
+          </div>
+          <div class="bar-chart" id="paymentBars"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Ключевые предупреждения</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+          <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:14px;">
+            <div style="font-size:11px;color:var(--red2);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">🔴 Критично</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.5">Все поставщики из КНР обязаны быть зарегистрированы в реестре <strong style="color:var(--text)">GACC</strong> (с 2021 г.). Поставка от незарегистрированного продавца физически невозможна.</div>
+          </div>
+          <div style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:14px;">
+            <div style="font-size:11px;color:var(--gold2);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">⚠ Важно</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.5">Фитосанитарный сертификат действителен не более <strong style="color:var(--text)">14 дней</strong> с момента отгрузки. Синхронизируйте дату с транзитным временем.</div>
+          </div>
+          <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:14px;">
+            <div style="font-size:11px;color:var(--accent2);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">💡 Совет</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.5">Очищенные орехи <strong style="color:var(--text)">(0802 32)</strong> облагаются НДС по ставке 10% (не 20%) как продовольственный товар — это снижает нагрузку на ~13 п.п.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== CLASSIFICATION ============== -->
+    <div class="section" id="section-classification">
+      <div class="section-header">
+        <h2>КЛАССИФИКАЦИЯ ТН ВЭД ЕАЭС</h2>
+        <p>Все коды для грецких орехов с указанием ставок пошлин и НДС</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Коды ТН ВЭД — Грецкие орехи (Группа 08)</div>
+            <div class="card-subtitle">Единый таможенный тариф ЕАЭС, действующая редакция</div>
+          </div>
+          <div style="font-size:11px;color:var(--text3)">КНР не имеет тарифных преференций</div>
+        </div>
+        <table class="hs-table">
+          <thead>
+            <tr>
+              <th>Код ТН ВЭД</th>
+              <th>Наименование товара</th>
+              <th>Пошлина</th>
+              <th>НДС</th>
+              <th>Итого нагрузка</th>
+              <th>Примечание</th>
+            </tr>
+          </thead>
+          <tbody id="hsTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Рекомендация по коду</div></div>
+          <div style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.2);border-radius:8px;padding:16px;margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:600;color:var(--green2);margin-bottom:6px;">✓ Наиболее выгодно</div>
+            <div style="font-family:var(--mono);font-size:14px;color:var(--text);margin-bottom:4px;">0802 32 000 0</div>
+            <div style="font-size:12px;color:var(--text2)">Очищенные ядра грецкого ореха — пошлина 5%, НДС 10%. Итоговая нагрузка ~16% от ТС</div>
+          </div>
+          <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:16px;">
+            <div style="font-size:12px;font-weight:600;color:var(--red2);margin-bottom:6px;">✗ Наименее выгодно</div>
+            <div style="font-family:var(--mono);font-size:14px;color:var(--text);margin-bottom:4px;">2008 19 120/190</div>
+            <div style="font-size:12px;color:var(--text2)">Жареные, в сахаре — пошлина 12%, НДС 20%. Итоговая нагрузка ~36% от ТС</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Риск переклассификации</div></div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:12px;">
+            При неверном указании кода ТН ВЭД таможенный орган вправе провести переклассификацию. Последствия:
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span style="color:var(--red2)">→</span>
+              <span style="color:var(--text2)">Доначисление пошлин и НДС</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span style="color:var(--red2)">→</span>
+              <span style="color:var(--text2)">Штраф 50–200% от суммы недоимки</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span style="color:var(--red2)">→</span>
+              <span style="color:var(--text2)">При умысле — ст. 194 УК РФ (от 300 тыс. руб.)</span>
+            </div>
+            <div style="margin-top:8px;padding:10px 12px;background:rgba(59,130,246,0.07);border-radius:6px;font-size:12px;color:var(--accent3);">
+              💡 Рекомендуется получить ПКР (предварительное классификационное решение) в ФТС до первой поставки
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== PAYMENTS ============== -->
+    <div class="section" id="section-payments">
+      <div class="section-header">
+        <h2>ТАМОЖЕННЫЕ ПЛАТЕЖИ</h2>
+        <p>Расчёт пошлин, НДС и сборов по видам орехов</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card" style="--card-accent:var(--green)">
+          <div class="label">Минимальная нагрузка</div>
+          <div class="value" style="color:var(--green2)">~16%</div>
+          <div class="desc">Очищенные ядра 0802 32</div>
+        </div>
+        <div class="stat-card" style="--card-accent:var(--accent)">
+          <div class="label">Средняя нагрузка</div>
+          <div class="value" style="color:var(--accent2)">~29%</div>
+          <div class="desc">Орех в скорлупе 0802 31</div>
+        </div>
+        <div class="stat-card" style="--card-accent:var(--orange)">
+          <div class="label">Высокая нагрузка</div>
+          <div class="value" style="color:var(--orange)">~36%</div>
+          <div class="desc">Жареный орех 2008 19</div>
+        </div>
+        <div class="stat-card" style="--card-accent:var(--text3)">
+          <div class="label">Акциз</div>
+          <div class="value" style="color:var(--text3)">0%</div>
+          <div class="desc">Не применяется</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Сравнение платежей по видам орехов</div>
+        </div>
+        <div id="paymentsDetailChart"></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Формула расчёта</div></div>
+          <div style="background:var(--bg3);border-radius:8px;padding:16px;font-family:var(--mono);font-size:12px;line-height:2;color:var(--text2);">
+            <div><span style="color:var(--accent2)">ТС</span> = Цена товара + Фрахт + Страхование</div>
+            <div><span style="color:var(--gold2)">Пошлина</span> = ТС × Ставка (5% или 12%)</div>
+            <div><span style="color:var(--green2)">НДС</span> = (ТС + Пошлина) × Ставка НДС</div>
+            <div><span style="color:var(--text3)">Сбор</span> = 1 000 – 30 000 руб. (фиксировано)</div>
+            <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;">
+              <span style="color:var(--heading)">Итого</span> = Пошлина + НДС + Сбор
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">НДС к вычету</div></div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.7;">
+            <p style="margin-bottom:10px;">НДС, уплаченный при ввозе, принимается к вычету при соблюдении условий:</p>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--green2)">✓</span> Наличие ГТД (декларации на товары)</div>
+              <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--green2)">✓</span> Компания на ОСНО (не УСН)</div>
+              <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--green2)">✓</span> Товар принят к учёту</div>
+              <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--green2)">✓</span> Товар используется в деятельности, облагаемой НДС</div>
+            </div>
+            <div style="margin-top:12px;padding:10px 12px;background:rgba(16,185,129,0.07);border-radius:6px;color:var(--green2);">
+              Фактическая нагрузка для компании на ОСНО снижается на сумму НДС-вычета
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== RISKS ============== -->
+    <div class="section" id="section-risks">
+      <div class="section-header">
+        <h2>АНАЛИЗ РИСКОВ</h2>
+        <p>16 идентифицированных рисков, распределённых по уровням</p>
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterRisks('all', this)">
+          <span class="dot dot-all"></span> Все риски <span style="margin-left:4px;color:var(--text3)">16</span>
+        </button>
+        <button class="filter-tab" onclick="filterRisks('high', this)">
+          <span class="dot dot-high"></span> Высокий <span style="margin-left:4px;color:var(--text3)">5</span>
+        </button>
+        <button class="filter-tab" onclick="filterRisks('medium', this)">
+          <span class="dot dot-medium"></span> Средний <span style="margin-left:4px;color:var(--text3)">6</span>
+        </button>
+        <button class="filter-tab" onclick="filterRisks('low', this)">
+          <span class="dot dot-low"></span> Низкий <span style="margin-left:4px;color:var(--text3)">5</span>
+        </button>
+      </div>
+
+      <div class="risks-grid" id="risksGrid"></div>
+    </div>
+
+    <!-- ============== DOCS ============== -->
+    <div class="section" id="section-docs">
+      <div class="section-header">
+        <h2>ДОКУМЕНТАЦИЯ</h2>
+        <p>Интерактивный чеклист документов для таможенного оформления</p>
+      </div>
+
+      <div class="checklist-summary">
+        <div class="progress-ring-wrap">
+          <svg width="60" height="60" viewBox="0 0 60 60">
+            <circle cx="30" cy="30" r="24" fill="none" stroke="var(--bg3)" stroke-width="6"/>
+            <circle id="progressRing" cx="30" cy="30" r="24" fill="none" stroke="var(--green)" stroke-width="6"
+              stroke-dasharray="150.8" stroke-dashoffset="150.8"
+              stroke-linecap="round" transform="rotate(-90 30 30)"
+              style="transition: stroke-dashoffset 0.5s ease;"/>
+          </svg>
+          <div class="progress-ring-val" id="progressVal">0%</div>
+        </div>
+        <div class="checklist-text">
+          <strong id="checkedCount">0 из 11</strong> документов отмечено как готово<br>
+          <span style="font-size:11px;color:var(--text3)">Нажмите на документ, чтобы отметить выполнение</span>
+        </div>
+      </div>
+
+      <div class="docs-list" id="docsList"></div>
+    </div>
+
+    <!-- ============== LOGISTICS ============== -->
+    <div class="section" id="section-logistics">
+      <div class="section-header">
+        <h2>ЛОГИСТИКА</h2>
+        <p>Маршруты доставки грецких орехов из КНР в Россию</p>
+      </div>
+
+      <div class="logistics-grid" id="logisticsGrid"></div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="card-header"><div class="card-title">Рекомендуемые места таможенного оформления</div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div style="background:var(--bg3);border-radius:8px;padding:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:6px;">Электронное декларирование</div>
+            <div style="font-size:12px;color:var(--text2)">Московская электронная таможня (МЭТ)</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:6px;">Пищевые грузы (Москва)</div>
+            <div style="font-size:12px;color:var(--text2)">Таможенный пост Белый Раст, Московская обл.</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:6px;">Ж/д переходы</div>
+            <div style="font-size:12px;color:var(--text2)">МАПП Забайкальск / Наушки (Монголия)</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:6px;">Морской (Запад)</div>
+            <div style="font-size:12px;color:var(--text2)">Таможенный пост Балтийский, порт СПб</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:8px;padding:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:6px;">Морской (Восток)</div>
+            <div style="font-size:12px;color:var(--text2)">Таможенный пост Восточный, порт Владивосток</div>
+          </div>
+          <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:14px;">
+            <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:6px;">💡 Рекомендация</div>
+            <div style="font-size:12px;color:var(--text2)">МЭТ + пост Белый Раст — оптимальное сочетание для регулярных поставок в Москву</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============== PROCESS ============== -->
+    <div class="section" id="section-process">
+      <div class="section-header">
+        <h2>ПРОЦЕСС ОФОРМЛЕНИЯ</h2>
+        <p>13 этапов таможенного оформления поставки</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Пошаговый процесс</div></div>
+          <div class="timeline" id="processTimeline"></div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-header"><div class="card-title">Первоочередные действия</div></div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:10px;background:var(--bg3);border-radius:8px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);background:rgba(59,130,246,0.15);padding:2px 7px;border-radius:4px;flex-shrink:0;">01</span>
+                <span style="font-size:12px;color:var(--text2);">Отобрать 2–3 поставщика, верифицировать в реестре GACC</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:10px;background:var(--bg3);border-radius:8px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);background:rgba(59,130,246,0.15);padding:2px 7px;border-radius:4px;flex-shrink:0;">02</span>
+                <span style="font-size:12px;color:var(--text2);">Заказать предотгрузочный инспекционный контроль (PSI) в КНР</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:10px;background:var(--bg3);border-radius:8px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);background:rgba(59,130,246,0.15);padding:2px 7px;border-radius:4px;flex-shrink:0;">03</span>
+                <span style="font-size:12px;color:var(--text2);">Лабораторный анализ образцов в аккредитованной лаборатории ЕАЭС</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:10px;background:var(--bg3);border-radius:8px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);background:rgba(59,130,246,0.15);padding:2px 7px;border-radius:4px;flex-shrink:0;">04</span>
+                <span style="font-size:12px;color:var(--text2);">Заключить договор с аккредитованным таможенным брокером</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:10px;background:var(--bg3);border-radius:8px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);background:rgba(59,130,246,0.15);padding:2px 7px;border-radius:4px;flex-shrink:0;">05</span>
+                <span style="font-size:12px;color:var(--text2);">Согласовать с банком условия таможенной банковской гарантии</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:10px;background:var(--bg3);border-radius:8px;">
+                <span style="font-family:var(--mono);font-size:11px;color:var(--accent2);background:rgba(59,130,246,0.15);padding:2px 7px;border-radius:4px;flex-shrink:0;">06</span>
+                <span style="font-size:12px;color:var(--text2);">Провести пилотную поставку объёмом 1–2 контейнера</span>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="background:rgba(239,68,68,0.05);border-color:rgba(239,68,68,0.2);">
+            <div class="card-header"><div class="card-title" style="color:var(--red2);">Резервный фонд</div></div>
+            <div style="font-size:28px;font-family:var(--display);color:var(--red2);letter-spacing:2px;margin-bottom:8px;">15%</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.6;">От стоимости партии необходимо зарезервировать на непредвиденные таможенные расходы. Гарантия — 120% от плановых платежей.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ===== DATA =====
+const hsData = [
+  { code: '0802 31 000 0', name: 'Грецкие орехи в скорлупе (целые)', duty: '5%', dutyClass: 'duty-5', vat: '20%', vatClass: 'vat-20', total: '~29%', note: 'Наиболее распространённый вид из КНР' },
+  { code: '0802 32 000 0', name: 'Грецкие орехи очищенные (ядро)', duty: '5%', dutyClass: 'duty-5', vat: '10%', vatClass: 'vat-10', total: '~16%', note: '⭐ Льготная ставка НДС как продовольствие' },
+  { code: '0802 31 000 0*', name: 'Орехи в скорлупе дроблёные / половинки', duty: '5%', dutyClass: 'duty-5', vat: '20%', vatClass: 'vat-20', total: '~29%', note: 'Классификация по состоянию' },
+  { code: '2008 19 120 0', name: 'Жареные грецкие орехи (без сахара)', duty: '12%', dutyClass: 'duty-12', vat: '20%', vatClass: 'vat-20', total: '~36%', note: 'Готовые к употреблению, повышенная пошлина' },
+  { code: '2008 19 190 0', name: 'Орехи с добавлением сахара / в сиропе', duty: '12%', dutyClass: 'duty-12', vat: '20%', vatClass: 'vat-20', total: '~36%', note: 'Категория готовых пищевых продуктов' },
+  { code: '1515 90 990 0', name: 'Масло из грецких орехов', duty: '5%', dutyClass: 'duty-5', vat: '20%', vatClass: 'vat-20', total: '~29%', note: 'Растительные масла, группа 15' },
+  { code: '2106 90', name: 'Экстракты / концентраты / БАД из орехов', duty: '5–15%', dutyClass: 'duty-var', vat: '20%', vatClass: 'vat-20', total: '~29–43%', note: 'Требуется регистрация как БАД' },
+];
+
+const risks = [
+  { level: 'high', levelLabel: 'ВЫСОКИЙ', title: 'Карантинные объекты при фитосанитарном контроле', desc: 'Россельхознадзор выявляет ореховую плодожорку, клещей или грибковые поражения. Партия уничтожается без компенсации. Поставщик может быть внесён в стоп-лист.', prob: 'Высокая', probClass: 'prob-high' },
+  { level: 'high', levelLabel: 'ВЫСОКИЙ', title: 'Превышение нормативов пестицидов и афлатоксинов', desc: 'Несоответствие ТР ТС 021/2011 по содержанию пестицидов, тяжёлых металлов или афлатоксинов. Запрет реализации, блокировка партии на СВХ, финансовые потери.', prob: 'Высокая', probClass: 'prob-high' },
+  { level: 'high', levelLabel: 'ВЫСОКИЙ', title: 'Поставщик не зарегистрирован в реестре GACC', desc: 'С 2021 г. ввоз от незарегистрированных поставщиков из КНР физически невозможен. Товар не пройдёт таможенное оформление. Требуется переотгрузка.', prob: 'Средняя', probClass: 'prob-medium' },
+  { level: 'high', levelLabel: 'ВЫСОКИЙ', title: 'Корректировка таможенной стоимости (КТС)', desc: 'ФТС применяет резервный метод и завышает базу. Доначисление платежей на 30–80% от плановых. Требуется банковская гарантия или залог. Задержка выпуска.', prob: 'Высокая', probClass: 'prob-high' },
+  { level: 'high', levelLabel: 'ВЫСОКИЙ', title: 'Неверная классификация товара', desc: 'Жареные орехи задекларированы как сырые. Переклассификация — доначисление + штраф 50–200% от недоимки. При умысле — ст. 194 УК РФ.', prob: 'Средняя', probClass: 'prob-medium' },
+  { level: 'medium', levelLabel: 'СРЕДНИЙ', title: 'Ошибки в фитосанитарном сертификате', desc: 'Просроченный документ (действует 14 дней) или несоответствие данных фактическим параметрам партии. Задержка на границе 5–15 дней, расходы на СВХ.', prob: 'Средняя', probClass: 'prob-medium' },
+  { level: 'medium', levelLabel: 'СРЕДНИЙ', title: 'Задержки в системе «Меркурий»', desc: 'Технические сбои ФГИС «Меркурий» или некорректные данные при оформлении ВСД. Задержка выпуска 3–10 рабочих дней без ВСД транспортировка невозможна.', prob: 'Средняя', probClass: 'prob-medium' },
+  { level: 'medium', levelLabel: 'СРЕДНИЙ', title: 'Волатильность курса CNY/RUB и USD/RUB', desc: 'Существенное изменение курса между датой контракта и датой оформления. Увеличение рублёвых платежей. Снижение рентабельности сделки.', prob: 'Высокая', probClass: 'prob-high' },
+  { level: 'medium', levelLabel: 'СРЕДНИЙ', title: 'Несоответствие маркировки требованиям ТР ТС', desc: 'Маркировка только на китайском языке, отсутствует обязательная информация. Запрет реализации, перемаркировка на складе. Штрафы по ст. 14.43 КоАП.', prob: 'Средняя', probClass: 'prob-medium' },
+  { level: 'medium', levelLabel: 'СРЕДНИЙ', title: 'Санкционные ограничения при транзите', desc: 'Усложнение транзитных маршрутов через отдельные страны. Необходимость смены маршрута, рост транспортных расходов и сроков доставки.', prob: 'Средняя', probClass: 'prob-medium' },
+  { level: 'medium', levelLabel: 'СРЕДНИЙ', title: 'Недостаточное обеспечение таможенных платежей', desc: 'ФТС требует банковскую гарантию или залог при высоком ценовом риске. Оформление гарантии занимает 3–7 рабочих дней — задержка выпуска.', prob: 'Средняя', probClass: 'prob-medium' },
+  { level: 'low', levelLabel: 'НИЗКИЙ', title: 'Технические ошибки в декларации на товары', desc: 'Опечатки в кодах ТН ВЭД, ошибки в весе или количестве при электронном декларировании. Задержка 1–3 дня, возможен незначительный штраф.', prob: 'Низкая', probClass: 'prob-low' },
+  { level: 'low', levelLabel: 'НИЗКИЙ', title: 'Расхождения в инвойсе и упаковочном листе', desc: 'Незначительные отклонения по весу или количеству мест. Запрос пояснений от декларанта, приостановка 1–2 дня. Устраняется объяснительной запиской.', prob: 'Низкая', probClass: 'prob-low' },
+  { level: 'low', levelLabel: 'НИЗКИЙ', title: 'Задержка получения ЭЦП при первой поставке', desc: 'Задержка подачи ДТ на 3–5 рабочих дней при первичном оформлении ЭЦП для декларанта или брокера. Дополнительные расходы на СВХ.', prob: 'Очень низкая', probClass: 'prob-low' },
+  { level: 'low', levelLabel: 'НИЗКИЙ', title: 'Климатические повреждения при транспортировке', desc: 'Незначительная порча товара из-за влажности или перепадов температур. Снижение сортности, уценка. Таможенных последствий не имеет.', prob: 'Низкая', probClass: 'prob-low' },
+  { level: 'low', levelLabel: 'НИЗКИЙ', title: 'Изменение ставок пошлин в период действия контракта', desc: 'Решения ЕЭК могут скорректировать ставки ЕТТ. Необходим мониторинг НПА. Незначительное изменение стоимости оформления.', prob: 'Очень низкая', probClass: 'prob-low' },
+];
+
+const docs = [
+  { name: 'Контракт (договор купли-продажи)', issuer: 'Стороны сделки', required: true },
+  { name: 'Инвойс (счёт-фактура)', issuer: 'Продавец', required: true },
+  { name: 'Упаковочный лист (Packing List)', issuer: 'Продавец', required: true },
+  { name: 'Транспортные документы (CMR / коносамент / AWB)', issuer: 'Перевозчик', required: true },
+  { name: 'Фитосанитарный сертификат', issuer: 'GACC (Китай)', required: true },
+  { name: 'Декларация о соответствии ТР ТС 021/2011', issuer: 'Аккредитованный орган ЕАЭС', required: true },
+  { name: 'Сертификат происхождения товара', issuer: 'ТПП Китая / CCPIT', required: false },
+  { name: 'Протоколы испытаний (лабораторный анализ)', issuer: 'Аккредитованная лаборатория', required: true },
+  { name: 'Паспорт качества / качественное удостоверение', issuer: 'Продавец / лаборатория', required: false },
+  { name: 'Договор страхования груза', issuer: 'Страховая компания', required: false },
+  { name: 'Свидетельство о регистрации производителя в GACC', issuer: 'GACC (Китай)', required: true },
+];
+
+const logistics = [
+  { icon: '🚂', name: 'Железнодорожный (ЮКЖД / FESCO)', desc: 'Контейнер 20\'/40\' через Казахстан или Монголию', time: '18–28 дней', cost: '$2 500–5 000 / контейнер', rec: 'best', recLabel: '⭐ Оптимально' },
+  { icon: '🚛', name: 'Автомобильный (TIR)', desc: 'Автофура через Казахстан', time: '12–18 дней', cost: '$3 500–6 500', rec: 'ok', recLabel: '⚡ При срочности' },
+  { icon: '🚢', name: 'Морской (FCL)', desc: 'Полный контейнер, порты СПб / Владивосток', time: '35–55 дней', cost: '$1 800–3 500 / контейнер', rec: 'ok', recLabel: '📦 Для крупных партий' },
+  { icon: '✈️', name: 'Авиа', desc: 'Прямые рейсы Москва (SVO / DME)', time: '3–7 дней', cost: '$3–6 / кг', rec: 'no', recLabel: '✗ Нецелесообразно' },
+];
+
+const processSteps = [
+  { n: '1', title: 'Аудит поставщика, проверка в реестре GACC', who: 'Отдел ВЭД / Закупки', when: 'За 30–60 дней до отгрузки' },
+  { n: '2', title: 'Запрос ПКР в ФТС (при необходимости)', who: 'Таможенный брокер', when: 'За 30 дней до ввоза' },
+  { n: '3', title: 'Заключение контракта, оформление паспорта сделки', who: 'Финансовый отдел', when: 'До отгрузки' },
+  { n: '4', title: 'Отгрузка, получение фитосанитарного сертификата GACC', who: 'Поставщик (КНР)', when: 'Дата отгрузки' },
+  { n: '5', title: 'Предварительное информирование ФТС (ПИ)', who: 'Таможенный брокер', when: 'За 2–4 часа до границы' },
+  { n: '6', title: 'Фитосанитарный контроль Россельхознадзора на МАПП', who: 'Перевозчик / брокер', when: 'На границе' },
+  { n: '7', title: 'Помещение товара на СВХ (при необходимости)', who: 'Перевозчик', when: '1–3 дня' },
+  { n: '8', title: 'Подача декларации на товары (ДТ) в электронной форме', who: 'Таможенный брокер', when: 'В день помещения на СВХ' },
+  { n: '9', title: 'Уплата таможенных платежей (пошлина + НДС + сбор)', who: 'Финансовый отдел', when: 'До выпуска' },
+  { n: '10', title: 'Таможенный досмотр (при применении профиля риска)', who: 'ФТС России', when: '1–5 рабочих дней' },
+  { n: '11', title: 'Выпуск товара в свободное обращение', who: 'ФТС России', when: '1 рабочий день' },
+  { n: '12', title: 'Получение декларации о соответствии ТР ТС, ВСД в Меркурии', who: 'Отдел ВЭД / брокер', when: 'Параллельно 8–11' },
+  { n: '13', title: 'Доставка на склад, приёмка, постановка на учёт', who: 'Логистика / склад', when: 'После выпуска' },
+];
+
+const payments = [
+  { name: 'Очищенные ядра (0802 32)', pct: 16, color: 'var(--green)' },
+  { name: 'В скорлупе (0802 31)', pct: 29, color: 'var(--accent)' },
+  { name: 'С добавками (2008 19)', pct: 36, color: 'var(--red)' },
+];
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  setDate();
+  renderHSTable();
+  renderRisks();
+  renderDocs();
+  renderLogistics();
+  renderProcess();
+  renderPaymentBars();
+  renderPaymentsDetail();
+  animateBars();
+});
+
+function setDate() {
+  const d = new Date();
+  document.getElementById('currentDate').textContent =
+    d.toLocaleDateString('ru-RU', { day:'2-digit', month:'long', year:'numeric' });
+}
+
+function showSection(name, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  el.classList.add('active');
+  if (name === 'payments') setTimeout(animateBars, 100);
+}
+
+// HS TABLE
+function renderHSTable() {
+  const tbody = document.getElementById('hsTableBody');
+  tbody.innerHTML = hsData.map(r => `
+    <tr>
+      <td class="code-cell">${r.code}</td>
+      <td style="color:var(--text)">${r.name}</td>
+      <td><span class="duty-badge ${r.dutyClass}">${r.duty}</span></td>
+      <td><span class="duty-badge ${r.vatClass}">${r.vat}</span></td>
+      <td style="font-family:var(--mono);font-size:12px;color:var(--text);font-weight:600;">${r.total}</td>
+      <td style="color:var(--text3);font-size:12px;">${r.note}</td>
+    </tr>`).join('');
+}
+
+// RISKS
+function renderRisks(filter = 'all') {
+  const grid = document.getElementById('risksGrid');
+  const filtered = filter === 'all' ? risks : risks.filter(r => r.level === filter);
+  grid.innerHTML = filtered.map(r => `
+    <div class="risk-item risk-${r.level}">
+      <span class="risk-level-badge">${r.levelLabel}</span>
+      <div>
+        <div class="risk-title">${r.title}</div>
+        <div class="risk-desc">${r.desc}</div>
+      </div>
+      <span class="risk-prob ${r.probClass}">${r.prob}</span>
+    </div>`).join('');
+}
+
+function filterRisks(level, btn) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderRisks(level);
+}
+
+// DOCS
+let checkedDocs = new Set();
+function renderDocs() {
+  const list = document.getElementById('docsList');
+  list.innerHTML = docs.map((d, i) => `
+    <div class="doc-item ${checkedDocs.has(i) ? 'checked' : ''}" onclick="toggleDoc(${i})">
+      <div class="doc-check">${checkedDocs.has(i) ? '✓' : ''}</div>
+      <div>
+        <div class="doc-name">${d.name}</div>
+        <div class="doc-issuer">${d.issuer}</div>
+      </div>
+      <span class="doc-required ${d.required ? 'doc-req' : 'doc-rec'}">${d.required ? 'Обязателен' : 'Рекомендуется'}</span>
+    </div>`).join('');
+  updateProgress();
+}
+
+function toggleDoc(i) {
+  checkedDocs.has(i) ? checkedDocs.delete(i) : checkedDocs.add(i);
+  renderDocs();
+}
+
+function updateProgress() {
+  const pct = Math.round((checkedDocs.size / docs.length) * 100);
+  const circ = 2 * Math.PI * 24;
+  const offset = circ - (pct / 100) * circ;
+  document.getElementById('progressRing').style.strokeDashoffset = offset;
+  document.getElementById('progressVal').textContent = pct + '%';
+  document.getElementById('checkedCount').textContent = `${checkedDocs.size} из ${docs.length}`;
+}
+
+// LOGISTICS
+function renderLogistics() {
+  const grid = document.getElementById('logisticsGrid');
+  grid.innerHTML = logistics.map(l => `
+    <div class="logistics-card">
+      <div class="route-name"><span class="route-icon">${l.icon}</span>${l.name}</div>
+      <div class="logistics-row"><span class="logistics-key">Маршрут</span><span class="logistics-val">${l.desc}</span></div>
+      <div class="logistics-row"><span class="logistics-key">Срок доставки</span><span class="logistics-val">${l.time}</span></div>
+      <div class="logistics-row"><span class="logistics-key">Стоимость</span><span class="logistics-val">${l.cost}</span></div>
+      <div><span class="rec-badge rec-${l.rec}">${l.recLabel}</span></div>
+    </div>`).join('');
+}
+
+// PROCESS
+function renderProcess() {
+  const tl = document.getElementById('processTimeline');
+  tl.innerHTML = processSteps.map((s, i) => `
+    <div class="timeline-item" data-step="${s.n}" style="animation-delay:${i * 0.04}s">
+      <div class="timeline-title">${s.title}</div>
+      <div class="timeline-meta">
+        <span class="timeline-who">${s.who}</span>
+        <span class="timeline-when">${s.when}</span>
+      </div>
+    </div>`).join('');
+}
+
+// PAYMENT BARS (overview)
+function renderPaymentBars() {
+  const el = document.getElementById('paymentBars');
+  el.innerHTML = payments.map(p => `
+    <div class="bar-row">
+      <div class="bar-label">
+        <span class="bar-name">${p.name}</span>
+        <span class="bar-val">${p.pct}%</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" data-pct="${p.pct}" style="background:${p.color};width:0%"></div>
+      </div>
+    </div>`).join('');
+}
+
+// PAYMENTS DETAIL
+function renderPaymentsDetail() {
+  const el = document.getElementById('paymentsDetailChart');
+  const rows = [
+    { name: 'Орех в скорлупе (0802 31)', duty: 5, vat: 20, total: 29, color: 'var(--accent)' },
+    { name: 'Орех очищенный (0802 32)', duty: 5, vat: 10, total: 16, color: 'var(--green)' },
+    { name: 'Жареный орех (2008 19)', duty: 12, vat: 20, total: 36, color: 'var(--red)' },
+  ];
+  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:20px;">` +
+    rows.map(r => `
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:13px;color:var(--text)">${r.name}</span>
+          <span style="font-family:var(--mono);font-size:13px;color:${r.color};font-weight:600;">~${r.total}% от ТС</span>
+        </div>
+        <div style="display:flex;gap:4px;align-items:center;height:24px;">
+          <div style="background:rgba(245,158,11,0.7);width:${r.duty / 36 * 100}%;height:100%;border-radius:4px 0 0 4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);color:#000;font-weight:600;min-width:30px;">
+            ${r.duty}%
+          </div>
+          <div style="background:rgba(59,130,246,0.7);width:${r.vat / 36 * 100}%;height:100%;border-radius:0 4px 4px 0;display:flex;align-items:center;justify-content:center;font-size:10px;font-family:var(--mono);color:#fff;font-weight:600;min-width:30px;">
+            ${r.vat}%
+          </div>
+          <span style="font-size:10px;color:var(--text3);margin-left:8px;white-space:nowrap;">пошлина + НДС</span>
+        </div>
+      </div>`).join('') +
+    `</div>
+    <div style="display:flex;gap:16px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border2);">
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);">
+        <div style="width:12px;height:12px;background:rgba(245,158,11,0.7);border-radius:2px;"></div> Ввозная пошлина
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);">
+        <div style="width:12px;height:12px;background:rgba(59,130,246,0.7);border-radius:2px;"></div> НДС при ввозе
+      </div>
+    </div>`;
+}
+
+function animateBars() {
+  document.querySelectorAll('.bar-fill[data-pct]').forEach(b => {
+    setTimeout(() => { b.style.width = b.dataset.pct + '%'; }, 50);
+  });
+}
+</script>
+</body>
+</html>
